@@ -1,9 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
+```python
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -14,11 +9,10 @@ from lightgbm import LGBMRegressor
 from datetime import timedelta
 import statistics
 from collections import Counter
+```
 
 
-# In[2]:
-
-
+```python
 class Trade_Broker():
     def __init__(self, strategy_name, price_history, *args):
         self.strategy_name = strategy_name
@@ -126,11 +120,10 @@ class Trade_Broker():
                   'profit_to_date': self.profit,
                   'capacity': self.capacity_in_use}
         self.trade_history.append(record)
+```
 
 
-# In[3]:
-
-
+```python
 def random_strategy(price_history_df):
     """Basic trading strategy where everyday, a buy order and sell order 
     are made at random times.
@@ -171,11 +164,10 @@ def random_strategy(price_history_df):
         model.time_step()
     print(f'Total Profit: £{model.profit}')
     return model 
+```
 
 
-# In[4]:
-
-
+```python
 def get_hour_from_datetime(date):
     """Function to extract the float hour value from a datetime object.
     This value includes the number of minutes as a decimal.
@@ -232,10 +224,10 @@ def basic_strategy(price_history_df, buy_hour, sell_hour):
     print(f'Total Profit: £{model.profit}')
     return model 
 
+```
 
-# In[5]:
 
-
+```python
 def process_data(df):
     """Feature engineering for date information. This function is designed
     to produce features to aid the ML models in forecasting. The function 
@@ -323,11 +315,10 @@ def process_daily_data(df):
     daily_df['prices'].fillna(method = 'backfill', inplace=True)
 
     return daily_df
+```
 
 
-# In[6]:
-
-
+```python
 def train_ml_models(data, current_date, training_data_start_date = '1990-01-01'):
     """Function to train ML models. This function trains two simple LGBMRegressor
     models to determine at the beginning of each day which hours that day will
@@ -362,11 +353,10 @@ def train_ml_models(data, current_date, training_data_start_date = '1990-01-01')
     return max_predictor, min_predictor, today_vector, valid
 
 # train_ml_models(ddf, current_date = '2023-01-01')
+```
 
 
-# In[7]:
-
-
+```python
 def daily_ml_strategy(price_history_df, daily_df, training_data_days = 9999):
     """Trade based on the output of the ML models. 2 ML models are used to 
     determine which hour of each day will have the highest and lowest price
@@ -425,11 +415,10 @@ def daily_ml_strategy(price_history_df, daily_df, training_data_days = 9999):
         model.time_step()
     print(f'Total Profit: £{model.profit}')
     return model
+```
 
 
-# In[8]:
-
-
+```python
 def get_min_max_hours(price_history_df, date, start_date, agg_metric):
     """For each day is the historic dataset, the hours with the highest and
     lowest price is identified.
@@ -506,20 +495,18 @@ def historic_min_max_hour_strategy(price_history_df, training_data_days = 9999, 
         model.time_step()
     print(f'Total Profit: £{model.profit}')
     return model    
+```
 
 
-# In[9]:
-
-
+```python
 #prep data
 price_history_df = pd.read_csv('input_data.csv')
 price_history_df = process_data(price_history_df)
 daily_df = process_daily_data(price_history_df)
+```
 
 
-# In[10]:
-
-
+```python
 #basic strategies
 sns.set()
 fig, ax = plt.subplots(figsize = (12, 6))
@@ -546,11 +533,95 @@ record_basic2 = pd.DataFrame.from_records(model.trade_history)
 ax.plot(record_basic2['timestamp'], record_basic2['profit_to_date'], label = 'Fixed Strategy: \n buy_hour = 06:00 \n sell_hour = 18:00')
 
 ax.legend()
+```
+
+    2016-01-01 00:00:00
+    Profit so far: 0
+    2017-01-30 00:00:00
+    Profit so far: -115072.37499999999
+    2018-01-30 00:00:00
+    Profit so far: -246775.74450000012
 
 
-# In[11]:
+    C:\Users\PhilipComrie-Smith\AppData\Local\Temp\ipykernel_10412\3025293059.py:53: UserWarning: Price is nan, buy order cancelled.
+      warnings.warn("Price is nan, buy order cancelled.")
 
 
+    2019-01-30 00:30:00
+    Profit so far: -476671.3538
+    2020-01-30 00:30:00
+    Profit so far: -650986.8011749998
+    2021-03-21 16:30:00
+    Profit so far: -827130.1976750012
+    2022-03-21 16:30:00
+    Profit so far: -1270742.6608000011
+    2023-03-21 16:30:00
+    Profit so far: -1971093.935800002
+    single positional indexer is out-of-bounds
+    Total Profit: £-2018390.6358000014
+    2016-01-01 00:00:00
+    Profit so far: £0
+    2017-01-30 00:00:00
+    Profit so far: £-222124.231725
+    2018-01-30 00:00:00
+    Profit so far: £-472074.17952500016
+
+
+    C:\Users\PhilipComrie-Smith\AppData\Local\Temp\ipykernel_10412\3025293059.py:87: UserWarning: price is nan, sell order cancelled.
+      warnings.warn("price is nan, sell order cancelled.")
+
+
+    2019-01-30 00:30:00
+    Profit so far: £-452458.9563750004
+    2020-01-30 00:30:00
+    Profit so far: £-304874.36635000043
+    2021-03-21 16:30:00
+    Profit so far: £458178.36157499976
+    2022-03-21 16:30:00
+    Profit so far: £2621658.066325002
+    2023-03-21 16:30:00
+    Profit so far: £4234468.057075006
+    single positional indexer is out-of-bounds
+    Total Profit: £4285119.232075011
+    2016-01-01 00:00:00
+    Profit so far: £0
+    2017-01-30 00:00:00
+    Profit so far: £468741.85080000036
+    2018-01-30 00:00:00
+    Profit so far: £341876.83897500107
+
+
+    C:\Users\PhilipComrie-Smith\AppData\Local\Temp\ipykernel_10412\3025293059.py:87: UserWarning: price is nan, sell order cancelled.
+      warnings.warn("price is nan, sell order cancelled.")
+
+
+    2019-01-30 00:30:00
+    Profit so far: £-60318.01037499914
+    2020-01-30 00:30:00
+    Profit so far: £-368725.96727499895
+    2021-03-21 16:30:00
+    Profit so far: £-746146.6415999981
+    2022-03-21 16:30:00
+    Profit so far: £-2379304.0166
+    2023-03-21 16:30:00
+    Profit so far: £-3984446.8064499996
+    single positional indexer is out-of-bounds
+    Total Profit: £-4026400.006449999
+
+
+
+
+
+    <matplotlib.legend.Legend at 0x1eff302c700>
+
+
+
+
+![png](trading_files/trading_9_8.png)
+
+
+
+```python
 #Run ML strategies
 sns.set()
 fig, ax = plt.subplots(figsize = (12, 6))
@@ -575,11 +646,95 @@ portfolio_hist = pd.DataFrame.from_records(daily_ml_strategy_model3.portfolio_hi
 portfolio_hist.to_csv('portfolio_history.csv')
 
 ax.legend()
+```
+
+    2016-01-01 00:00:00
+    Profit so far: £0
+    2017-01-30 00:00:00
+    Profit so far: £203421.95000000024
+    2018-01-30 00:00:00
+    Profit so far: £191837.2578750002
 
 
-# In[12]:
+    C:\Users\PhilipComrie-Smith\AppData\Local\Temp\ipykernel_10412\3025293059.py:87: UserWarning: price is nan, sell order cancelled.
+      warnings.warn("price is nan, sell order cancelled.")
 
 
+    2019-01-30 00:30:00
+    Profit so far: £467052.94852500013
+    2020-01-30 00:30:00
+    Profit so far: £803482.2515499998
+    2021-03-21 16:30:00
+    Profit so far: £1139077.2670499985
+    2022-03-21 16:30:00
+    Profit so far: £296445.73812499834
+    2023-03-21 16:30:00
+    Profit so far: £622732.8626749974
+    single positional indexer is out-of-bounds
+    Total Profit: £616695.3376749974
+    2016-01-01 00:00:00
+    Profit so far: £0
+    2017-01-30 00:00:00
+    Profit so far: £203421.95000000024
+    2018-01-30 00:00:00
+    Profit so far: £194173.78362500036
+
+
+    C:\Users\PhilipComrie-Smith\AppData\Local\Temp\ipykernel_10412\3025293059.py:87: UserWarning: price is nan, sell order cancelled.
+      warnings.warn("price is nan, sell order cancelled.")
+
+
+    2019-01-30 00:30:00
+    Profit so far: £559209.6992750003
+    2020-01-30 00:30:00
+    Profit so far: £784654.0509000018
+    2021-03-21 16:30:00
+    Profit so far: £1130570.0814000005
+    2022-03-21 16:30:00
+    Profit so far: £892641.0469750008
+    2023-03-21 16:30:00
+    Profit so far: £1115903.6715250004
+    single positional indexer is out-of-bounds
+    Total Profit: £1078206.6465249988
+    2016-01-01 00:00:00
+    Profit so far: £0
+    2017-01-30 00:00:00
+    Profit so far: £216881.45000000024
+    2018-01-30 00:00:00
+    Profit so far: £217643.46487500018
+
+
+    C:\Users\PhilipComrie-Smith\AppData\Local\Temp\ipykernel_10412\3025293059.py:87: UserWarning: price is nan, sell order cancelled.
+      warnings.warn("price is nan, sell order cancelled.")
+
+
+    2019-01-30 00:30:00
+    Profit so far: £482656.605525
+    2020-01-30 00:30:00
+    Profit so far: £787153.8496500013
+    2021-03-21 16:30:00
+    Profit so far: £1447776.076150001
+    2022-03-21 16:30:00
+    Profit so far: £1260507.9559000016
+    2023-03-21 16:30:00
+    Profit so far: £1626398.0804499998
+    single positional indexer is out-of-bounds
+    Total Profit: £1588701.0554499982
+
+
+
+
+
+    <matplotlib.legend.Legend at 0x1eff9ca4eb0>
+
+
+
+
+![png](trading_files/trading_10_8.png)
+
+
+
+```python
 #Run moving average strategies
 sns.set()
 fig, ax = plt.subplots(figsize = (12, 6))
@@ -600,21 +755,104 @@ ma_record3 = pd.DataFrame.from_records(ma_model3.trade_history)
 ax.plot(ma_record3['timestamp'], ma_record3['profit_to_date'], label = 'Moving Average, 6 Months')
 
 ax.legend()
+```
+
+    2016-01-01 00:00:00
+    0
+    2017-01-30 00:00:00
+    722179.2257999993
+    2018-01-30 00:00:00
+    1174738.118299999
 
 
-# In[13]:
+    C:\Users\PhilipComrie-Smith\AppData\Local\Temp\ipykernel_10412\3025293059.py:87: UserWarning: price is nan, sell order cancelled.
+      warnings.warn("price is nan, sell order cancelled.")
 
 
+    2019-01-30 00:30:00
+    1482130.1825499989
+    2020-01-30 00:30:00
+    1687075.3678249975
+    2021-03-21 16:30:00
+    1864760.4007499986
+    2022-03-21 16:30:00
+    2605051.9675000003
+    2023-03-21 16:30:00
+    3884892.45825
+    single positional indexer is out-of-bounds
+    Total Profit: £3935543.6332500004
+    2016-01-01 00:00:00
+    0
+    2017-01-30 00:00:00
+    721455.5757999992
+    2018-01-30 00:00:00
+    1156109.648299998
+
+
+    C:\Users\PhilipComrie-Smith\AppData\Local\Temp\ipykernel_10412\3025293059.py:87: UserWarning: price is nan, sell order cancelled.
+      warnings.warn("price is nan, sell order cancelled.")
+
+
+    2019-01-30 00:30:00
+    1634387.9589749994
+    2020-01-30 00:30:00
+    2064956.7530999982
+    2021-03-21 16:30:00
+    2854711.7376999976
+    2022-03-21 16:30:00
+    4976674.442449992
+    2023-03-21 16:30:00
+    6940606.016999988
+    single positional indexer is out-of-bounds
+    Total Profit: £7029764.8669999875
+    2016-01-01 00:00:00
+    0
+    2017-01-30 00:00:00
+    782922.2507999992
+    2018-01-30 00:00:00
+    1277374.137499999
+
+
+    C:\Users\PhilipComrie-Smith\AppData\Local\Temp\ipykernel_10412\3025293059.py:87: UserWarning: price is nan, sell order cancelled.
+      warnings.warn("price is nan, sell order cancelled.")
+
+
+    2019-01-30 00:30:00
+    1781271.1320000004
+    2020-01-30 00:30:00
+    2206116.521125
+    2021-03-21 16:30:00
+    2974629.9807250006
+    2022-03-21 16:30:00
+    5043841.228725002
+    2023-03-21 16:30:00
+    6900240.879649997
+    single positional indexer is out-of-bounds
+    Total Profit: £6984202.404650001
+
+
+
+
+
+    <matplotlib.legend.Legend at 0x1effe2bc490>
+
+
+
+
+![png](trading_files/trading_11_8.png)
+
+
+
+```python
 portfolio_hist = pd.DataFrame.from_records(ma_model3.portfolio_history)
 
 ma_model3.portfolio_history
 
 portfolio_hist.to_csv('portfolio_history.csv')
+```
 
 
-# In[14]:
-
-
+```python
 #Run rolling Median strategies
 sns.set()
 fig, ax = plt.subplots(figsize = (12, 6))
@@ -637,9 +875,107 @@ rm_record3 = pd.DataFrame.from_records(ma_model3.trade_history)
 ax.plot(rm_record3['timestamp'], rm_record3['profit_to_date'], label = 'Moving Average, 6 Months')
 
 ax.legend()
+```
+
+    2016-01-01 00:00:00
+    0
+    2017-01-30 00:00:00
+    686834.5257999992
+    2018-01-30 00:00:00
+    1139393.4182999993
 
 
-# In[ ]:
+    C:\Users\PhilipComrie-Smith\AppData\Local\Temp\ipykernel_10412\3025293059.py:87: UserWarning: price is nan, sell order cancelled.
+      warnings.warn("price is nan, sell order cancelled.")
+
+
+    2019-01-30 00:30:00
+    1422005.2576750012
+    2020-01-30 00:30:00
+    1642347.7854499996
+    2021-03-21 16:30:00
+    1843607.3183750007
+    2022-03-21 16:30:00
+    1572972.1855000006
+    2023-03-21 16:30:00
+    158764.67664999972
+    single positional indexer is out-of-bounds
+    Total Profit: £21483.93304999969
+    2016-01-01 00:00:00
+    0
+    2017-01-30 00:00:00
+    686834.5257999992
+    2018-01-30 00:00:00
+    1186974.942799999
+
+
+    C:\Users\PhilipComrie-Smith\AppData\Local\Temp\ipykernel_10412\3025293059.py:87: UserWarning: price is nan, sell order cancelled.
+      warnings.warn("price is nan, sell order cancelled.")
+
+
+    2019-01-30 00:30:00
+    1678761.08205
+    2020-01-30 00:30:00
+    2112104.6511749984
+    2021-03-21 16:30:00
+    2910231.7372749955
+    2022-03-21 16:30:00
+    4888501.962424988
+    2023-03-21 16:30:00
+    6555421.278174981
+    single positional indexer is out-of-bounds
+    Total Profit: £6612380.62817498
+    2016-01-01 00:00:00
+    0
+    2017-01-30 00:00:00
+    887891.7507999997
+    2018-01-30 00:00:00
+    1433271.0396249997
+
+
+    C:\Users\PhilipComrie-Smith\AppData\Local\Temp\ipykernel_10412\3025293059.py:87: UserWarning: price is nan, sell order cancelled.
+      warnings.warn("price is nan, sell order cancelled.")
+
+
+    2019-01-30 00:30:00
+    1941771.9224750015
+    2020-01-30 00:30:00
+    2363257.7365999976
+    2021-03-21 16:30:00
+    3102390.822699996
+    2022-03-21 16:30:00
+    4875431.072849993
+    2023-03-21 16:30:00
+    6583390.863599988
+    single positional indexer is out-of-bounds
+    Total Profit: £6672892.688599988
 
 
 
+
+
+    <matplotlib.legend.Legend at 0x1ef83054c70>
+
+
+
+
+![png](trading_files/trading_13_8.png)
+
+
+
+```python
+jupyter nbconvert --execute --to markdown README.ipynb
+```
+
+
+      File "/var/folders/tc/mv5pzzp976g304bzfhfc9hfm0000gn/T/ipykernel_6849/1228639656.py", line 1
+        jupyter nbconvert --execute --to markdown README.ipynb
+                ^
+    SyntaxError: invalid syntax
+
+
+
+
+```python
+
+```
